@@ -4,7 +4,7 @@ import LogoText from "../assets/Logo-text.svg"
 
 const Header = () => {
     return (
-        <div className="flex justify-between max-w-[1110px] w-[100vw] mx-auto px-2 my-6 h-14">
+        <div className="flex justify-between max-w-[1110px] mx-auto px-3 my-6 h-14 sm:px-4">
             <div>
                 <a href="#home" className="flex">
                     <img src={LogoIcon} alt="Logo"/>
