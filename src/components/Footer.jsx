@@ -11,7 +11,7 @@ const Footer = () => {
                 <div className="flex flex-col items-center gap-14 mb-20">
                     <h3 className="text-primary font-amaranth font-normal text-[32px] leading-[100%] text-center sm:text-[45px] w-[90%]">Don’t wait any longer– <br/>Sign up and begin your journey with us today!</h3>
                 
-                    <Button className="bg-accent1 text-white w-[180px]" href="#register">Get Started</Button>
+                    <Button className="bg-accent1 text-white w-[180px]" href="/register">Get Started</Button>
                 </div>
                 <div className="w-full bg-[#ABA0F0] h-[2px]"></div>
                 <div className="flex flex-wrap justify-center sm:flex-nowrap sm:items-center sm:justify-between mt-8 gap-8">

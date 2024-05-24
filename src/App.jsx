@@ -1,15 +1,23 @@
-import Header from "./components/Header"
-import Hero from "./components/Hero"
-import Info from "./components/Info"
-import Footer from "./components/Footer"
+import { Routes, Route } from 'react-router-dom'
+import RegisterPage from './_auth/forms/RegisterPage'
+import LoginPage from './_auth/forms/LoginPage'
+import LandingPage from './pages/LandingPage'
+import AuthLayout from './_auth/AuthLayout'
 
 const App = () => {
   return (
     <>
-      <Header/>
-      <Hero/>
-      <Info/>
-      <Footer/>
+      <Routes>
+        <Route index element={<LandingPage/>}/>
+
+        {/* Public routes */}
+        <Route element={<AuthLayout/>}>
+          <Route path='/register' element={<RegisterPage/>} />
+          <Route path='/login' element={<LoginPage/>} />
+        </Route>
+
+        {/* Private routes */}
+      </Routes>
     </>
   )
 }

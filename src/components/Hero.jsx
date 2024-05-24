@@ -9,7 +9,7 @@ const Hero = () => {
 
             <p className="text-center text-secondary font-inter text-[16px] sm:text-[20px] sm:max-w-[485px]">Stay organized and on top of your workload with our app's easy-to-use task management features.</p>
 
-            <Button className="bg-accent1 text-white w-[180px]" href="#register">
+            <Button className="bg-accent1 text-white w-[180px]" href="/register">
                 Get Started
             </Button>
         </div>
