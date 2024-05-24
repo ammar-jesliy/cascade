@@ -1,17 +1,15 @@
 import Task1Svg from '../../assets/Task-bro.svg';
 import { useForm } from 'react-hook-form'
 import '../../assets/styles.css'
+import { createUserAccount } from '../../lib/appwrite/api';
 
 const RegisterPage = () => {
     const { register, handleSubmit, setError, formState: {errors, isSubmitting} } = useForm();
 
     const onSubmit = async (data) => {
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            throw new Error();
-        } catch (error) {
-            setError("email", {message: "This email is already taken"})
-        }
+        const newUser = await createUserAccount(data)
+
+        console.log(newUser);
     }
 
 
