@@ -34,7 +34,13 @@ const RegisterPage = () => {
                     <div className='flex flex-col gap-1'>
                         <label htmlFor="email" className='text-base text-primary font-normal sm:text-xl'>Email address</label>
                         <input 
-                            {...register("email")}
+                            {...register("email", {
+                                required: true,
+                                pattern: {
+                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i,
+                                    message: 'Invalid e-mail address'
+                                }
+                            })}
                             type="email" 
                             name="email" 
                             id="email"
