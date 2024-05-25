@@ -1,15 +1,48 @@
 import Task1Svg from '../../assets/Task-bro.svg';
-import { useForm } from 'react-hook-form'
+import { Form, useForm } from 'react-hook-form'
+import { Navigate, useNavigate } from 'react-router-dom';
 import '../../assets/styles.css'
 import { createUserAccount } from '../../lib/appwrite/api';
+import { useCreateUserAccountMutation, useSignInAccountMutation } from '../../lib/react-query/queriesAndMutations';
+import { useUserContent } from '../../context/AuthContext';
 
 const RegisterPage = () => {
-    const { register, handleSubmit, setError, formState: {errors, isSubmitting} } = useForm();
+    const { register, handleSubmit, setError, formState: {errors, isSubmitting}, reset } = useForm();
+
+    const { isLoading: isUserLoading, checkAuthUser } = useUserContent();
+    const navigate = useNavigate();
+
+
+    const {mutateAsync: createUserAccount, isPending} = useCreateUserAccountMutation();
+
+    const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccountMutation();
 
     const onSubmit = async (data) => {
         const newUser = await createUserAccount(data)
 
-        console.log(newUser);
+        if(!newUser) {
+            console.log("sign ip failed!")
+            return;
+        }
+
+        const session = await signInAccount({
+            email: data.email,
+            password: data.password,
+        })
+
+        if(!session) {
+            console.log("sign-in failed");
+        }
+
+        const isLoggedIn = await checkAuthUser();
+
+        if(isLoggedIn) {
+            reset();
+
+            navigate('/app')
+        } else {
+            console.log("Sign-in failed")
+        }
     }
 
 
@@ -65,7 +98,7 @@ const RegisterPage = () => {
                         {errors.password && <div className='text-red-600 text-sm'>{errors.password.message}</div>}
                     </div>
                     <button disabled={isSubmitting} type="submit" className='rounded-2xl h-16 w-full sm:w-96 bg-accent1 text-white text-xl font-bold'>
-                        {isSubmitting ? "Loading..." : "Sign-up"}
+                        {isPending ? "Loading..." : "Sign-up"}
                     </button>
                 </form>
                 <p className='text-sm sm:text-base font-normal text-secondary my-3'>Already have an account? <a href="/login" className='text-accent1'>Log in</a></p>
