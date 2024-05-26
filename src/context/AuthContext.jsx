@@ -56,10 +56,10 @@ const AuthProvider = ({children}) => {
     };
 
     useEffect(() => {
-        if(
-            localStorage.getItem('cookieFallback') === '[]'
-            // localStorage.getItem('cookieFallback') === null
-        ) navigate('/login')
+        // if(
+        //     localStorage.getItem('cookieFallback') === '[]' ||
+        //     localStorage.getItem('cookieFallback') === null
+        // ) navigate('/')
 
         checkAuthUser();
     }, []);
