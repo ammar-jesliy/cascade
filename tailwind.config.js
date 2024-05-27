@@ -15,7 +15,9 @@ export default {
         secondary: "#554B4B",
         accent2: "#D0CAF7",
         accent1: "#5E4AE3",
-        bg: "#EFEDFC"
+        bg: "#EFEDFC",
+        grey1: "#DDDDDD",
+        grey2: "#706E78"
       }
     },
   },

@@ -4,6 +4,7 @@ import LoginPage from './_auth/forms/LoginPage'
 import LandingPage from './pages/LandingPage'
 import AuthLayout from './_auth/AuthLayout'
 import Home from './_root/pages/Home'
+import RootLayout from './_root/RootLayout'
 
 const App = () => {
   return (
@@ -18,7 +19,9 @@ const App = () => {
         </Route>
 
         {/* Private routes */}
-        <Route path='/app' element={<Home/>}/>
+        <Route element={<RootLayout />}>
+          <Route path='/app' element={<Home/>}/>
+        </Route>
       </Routes>
     </>
   )

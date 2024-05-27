@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSignOutAccountMutation } from '../../lib/react-query/queriesAndMutations'
-import Button from '../../components/Button';
 import { useNavigate } from 'react-router-dom';
 import { useUserContent } from '../../context/AuthContext';
 
@@ -14,9 +13,14 @@ const Home = () => {
   }, [isSuccess])
 
   return (
-    <div>
-      <button onClick={() => signOut()}>SignOut</button>
-    </div>
+    <>
+      <div className='flex'>
+        <div>
+          <button onClick={() => signOut()}>SignOut</button>
+          <a href=""></a>
+        </div>
+      </div>
+    </>
   )
 }
 

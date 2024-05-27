@@ -2,10 +2,11 @@ import { Outlet, Navigate } from 'react-router-dom';
 import Section from '../components/Section';
 import LogoIcon from "../assets/Logo-icon.png";
 import LogoText from "../assets/Logo-text.svg";
+import { useUserContent } from '../context/AuthContext';
 
 const AuthLayout = () => {
 
-    const isAuthenticated = false;
+    const { isAuthenticated } = useUserContent();
 
     return (
         <>
