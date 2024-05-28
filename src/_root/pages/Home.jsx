@@ -14,11 +14,8 @@ const Home = () => {
 
   return (
     <>
-      <div className='flex'>
-        <div>
-          <button onClick={() => signOut()}>SignOut</button>
-          <a href=""></a>
-        </div>
+      <div className='flex items-center justify-center flex-1'>
+        main
       </div>
     </>
   )

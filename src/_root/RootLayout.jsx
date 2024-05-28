@@ -13,11 +13,11 @@ const RootLayout = () => {
 
 
     return (
-        <div className='flex'>
+        <div className='flex w-full'>
             <Groups onCreateGroup={handleCreateGroup} groups={groups} />
             
 
-            <section>
+            <section className='flex-1 flex flex-col'>
                 <TopBar />
                 <Outlet />
             </section>

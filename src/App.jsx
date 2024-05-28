@@ -5,6 +5,7 @@ import LandingPage from './pages/LandingPage'
 import AuthLayout from './_auth/AuthLayout'
 import Home from './_root/pages/Home'
 import RootLayout from './_root/RootLayout'
+import MainPage from './_root/pages/MainPage'
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         {/* Private routes */}
         <Route element={<RootLayout />}>
           <Route path='/app' element={<Home/>}/>
+          <Route path='/groups/:groupId' element={<MainPage/>}/>
         </Route>
       </Routes>
     </>

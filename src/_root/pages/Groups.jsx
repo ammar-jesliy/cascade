@@ -25,6 +25,7 @@ const Groups = ({ onCreateGroup, groups }) => {
 
     const handleGroupClick = (groupId) => {
         activeGroup = groupId === activeGroup ? null : groupId;
+        console.log(activeGroup, groupId)
     }
 
     useEffect(() => {
@@ -32,7 +33,7 @@ const Groups = ({ onCreateGroup, groups }) => {
     }, [isSuccess])
 
   return (
-    <div className='hidden md:flex flex-col w-80 bg-bg h-[100vh] shadow p-8 justify-between overflow-y-auto'>
+    <div className='hidden lg:flex flex-col w-80 bg-bg h-[100vh] shadow p-8 pt-6 justify-between overflow-y-auto'>
         <div>
             <div className='flex'>
                 <img src={logoIcon} alt="Logo" />
@@ -49,7 +50,7 @@ const Groups = ({ onCreateGroup, groups }) => {
                 
             </div>
             
-            <h2 className='text-xs font-normal text-grey2 mb-3'>All Groups</h2>
+            <h2 className='text-xs font-normal text-grey2 mb-3'>All Groups ({groups.length})</h2>
 
             <ul>
                 {groups.map(group => {
@@ -94,14 +95,14 @@ const Groups = ({ onCreateGroup, groups }) => {
             )}
 
             <button 
-                onClick={() => setIsCreatingGroup(!isCreatingGroup)} className='flex items-center gap-2 w-full my-3'
+                onClick={() => setIsCreatingGroup(!isCreatingGroup)} className='group flex items-center gap-2 w-full my-3'
             >
                 {isCreatingGroup ? (
                     <p className='flex bg-red-500 py-1 px-2 mt-1 rounded text-white font-bold'>Cancel</p>
                 ) : (
                     <>
-                        <img src={add} alt="Add" />
-                        <p className='text-accent1 text-lg font-semibold'>Create New Group</p>
+                        <img src={add} alt="Add" className='opacity-80 group-hover:opacity-100 transition'/>
+                        <p className='text-accent1 text-lg font-semibold opacity-80 group-hover:opacity-100 transition'>Create New Group</p>
                     </>
                 )}
             </button>
