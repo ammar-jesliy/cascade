@@ -85,3 +85,26 @@ export async function signOutAccount() {
         console.log(error)
     }
 }
+
+
+
+export async function createGroup(group) {
+    try {
+        const newGroup = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.groupCollectionId,
+            ID.unique(),
+            {
+                creator: group.userId,
+                title: group.title
+            }
+        )
+
+        if (!newGroup) throw Error;
+
+        return newGroup;
+
+    } catch {error} {
+        console.log(error);
+    }
+}

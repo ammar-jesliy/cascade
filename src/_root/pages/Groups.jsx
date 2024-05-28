@@ -25,7 +25,6 @@ const Groups = ({ onCreateGroup, groups }) => {
 
     const handleGroupClick = (groupId) => {
         activeGroup = groupId === activeGroup ? null : groupId;
-        console.log(activeGroup, groupId)
     }
 
     useEffect(() => {
@@ -54,12 +53,12 @@ const Groups = ({ onCreateGroup, groups }) => {
 
             <ul>
                 {groups.map(group => {
-                    const isActive = pathname === `/groups/${group.id}`
+                    const isActive = pathname === `/groups/${group.$id}`
 
                     return (
-                    <li key={group.id} className='group'>
+                    <li key={group.$id} className='group'>
                         <NavLink
-                            to={`/groups/${group.id}`}
+                            to={`/groups/${group.$id}`}
                             className={`flex text-left w-full py-3 pl-8  mx-[-32px] rounded-r-3xl gap-2 items-center text-grey2 group-hover:text-grey1 group-hover:bg-accent1 transition ${isActive && `text-grey1 bg-accent1`}`}
                             onClick={handleGroupClick(group.id)}
                         >

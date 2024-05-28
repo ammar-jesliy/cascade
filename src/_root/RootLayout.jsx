@@ -1,14 +1,30 @@
 import { useState } from 'react'
 import TopBar from './pages/TopBar'
 import Groups from './pages/Groups'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
+import { useUserContent } from '../context/AuthContext'
+import { useCreateGroupMutation } from '../lib/react-query/queriesAndMutations'
 
 const RootLayout = () => {
     const [groups, setGroups] = useState([]);
+    const { user } = useUserContent();
+    const { mutateAsync: createGroup } = useCreateGroupMutation();
+    const navigate = useNavigate()
 
-    const handleCreateGroup = (title) => {
-      const newGroup = {id: Date.now().toString(), title};
-      setGroups(prevGroups => [...prevGroups, newGroup]);
+    const handleCreateGroup = async (title) => {
+        const userId = user.$id 
+        try {
+            const newGroup = await createGroup({title, userId})
+
+            if (!newGroup) throw Error;
+
+            setGroups(prevGroups => [...prevGroups, newGroup]);
+
+            navigate(`/groups/${newGroup.$id}`)
+
+        } catch (error) {
+            console.log(error);
+        }
     };
 
 
