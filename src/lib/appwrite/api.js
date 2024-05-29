@@ -88,6 +88,8 @@ export async function signOutAccount() {
 
 
 
+// =============== Groups functions =================================
+
 export async function createGroup(group) {
     try {
         const newGroup = await databases.createDocument(
@@ -106,5 +108,50 @@ export async function createGroup(group) {
 
     } catch {error} {
         console.log(error);
+    }
+}
+
+
+export async function fetchGroups(userId) {
+    try {
+        const response = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.groupCollectionId,
+            [Query.equal('creator', userId)]
+        );
+
+        if (!response) throw Error;
+
+        return response.documents
+
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
+
+
+
+// ==================== Status Functions ============================
+
+export async function createStatus(status) {
+    try {
+        const newStatus = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.statusCollectionId,
+            ID.unique(),
+            {
+                groups: status.groupId,
+                title: status.title,
+                color: status.color
+            }
+        )
+
+        if (!newStatus) throw Error;
+
+        return newStatus;
+
+    } catch (error) {
+        console.log(error)
     }
 }
