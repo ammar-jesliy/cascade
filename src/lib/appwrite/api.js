@@ -155,3 +155,21 @@ export async function createStatus(status) {
         console.log(error)
     }
 }
+
+export async function fetchStatuses(groupId) {
+    try {
+        const response = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.statusCollectionId,
+            [Query.equal('groups', groupId)]
+        );
+
+        if (!response) throw Error;
+
+        return response.documents
+
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
