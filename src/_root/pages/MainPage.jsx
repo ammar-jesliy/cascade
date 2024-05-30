@@ -5,6 +5,7 @@ import { useCreateStatusMutation } from '../../lib/react-query/queriesAndMutatio
 import Modal from '../../components/Modal'
 import { fetchStatuses } from '../../lib/appwrite/api';
 import Spinner from '../../components/Spinner';
+import '../../assets/scrollbar.css'
 
 const MainPage = () => {
     const { groupId } = useParams();
@@ -109,11 +110,11 @@ const MainPage = () => {
                 </div>
             </Modal>
 
-            <div className='bg-bgApp flex-1 h-[calc(100vh-100px)] lg:w-[calc(100vw-320px)] overflow-auto mt-[100px] pt-8 pl-8 pb-8 lg:ml-[320px]'>
+            <div className='bg-bgApp flex-1 h-[calc(100vh-100px)] lg:w-[calc(100vw-320px)] overflow-auto mt-[100px] pl-8 pb-8 lg:ml-[320px]'>
                 {isLoading ? <Spinner /> : 
-                    <div className='h-full w-full z-10 flex'>
+                    <div className='z-10 flex'>
 
-                        <ul className='flex'>
+                        <ul className='flex gap-10 mr-10'>
                             {statuses && statuses
                             .filter(status => status.groups.$id === groupId)
                             .map(status => {
@@ -122,13 +123,21 @@ const MainPage = () => {
                                 return (
                                     <li 
                                         key={status.$id}
-                                        className='w-[300px] flex gap-4'
+                                        className='w-[300px] flex flex-col'
                                     >
-                                        <div 
-                                            className='h-6 w-6 rounded-full'
-                                            style={{backgroundColor: status.color}}
-                                        ></div>
-                                        <p className='text-lg font-medium text-grey2'>{status.title}</p>
+                                        <div className='flex gap-4 items-center sticky top-0 justify-center bg-bgApp py-8 '>
+                                            <div 
+                                                className='h-6 w-6 rounded-full'
+                                                style={{backgroundColor: status.color}}
+                                            ></div>
+                                            <p className='text-lg font-normal uppercase text-grey2'>{status.title}</p>
+                                        </div>
+                                        <div>
+                                            <div className='bg-bg rounded-xl py-6 px-6 flex flex-col gap-4 cursor-pointer'>
+                                                <p className='text-lg font-semibold text-primary'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minus, sapiente?</p>
+                                                <p className='text-sm font-medium text-grey2'>1 of 3 subtasks</p>
+                                            </div>
+                                        </div>
                                     </li>
                                 )
                             })}
@@ -136,7 +145,7 @@ const MainPage = () => {
 
 
                         <button 
-                            className='bg-accent2 h-full px-10 rounded-2xl text-primary text-[22px] font-bold whitespace-nowrap mr-10'
+                            className='bg-accent2 w-[300px] h-[calc(100vh-224px)] px-10 rounded-2xl text-primary text-[22px] font-bold whitespace-nowrap mr-10 mt-[92px]'
                             onClick={() => openModal(CreateStatusModal)}
                         >
                             + New Status

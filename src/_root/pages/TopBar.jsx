@@ -7,7 +7,7 @@ const TopBar = ({ groups, openModal }) => {
   const activeGroup = groups.find(group => group.$id === groupId);
 
   return (
-    <div className='h-[100px] fixed left-0 lg:left-[320px] right-0 bg-bg shadow flex justify-between items-center px-6'>
+    <div className='h-[100px] fixed left-0 lg:left-[320px] right-0 bg-bg shadow flex justify-between items-center px-6 z-20'>
       <p className='text-primary font-bold text-[28px]'>{activeGroup && activeGroup.title}</p>
       <div className='flex items-center gap-10'>
         <button 
