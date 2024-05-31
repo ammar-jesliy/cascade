@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import TopBar from './pages/TopBar'
 import Groups from './pages/Groups'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate, useParams } from 'react-router-dom'
 import { useUserContent } from '../context/AuthContext'
 import { useCreateGroupMutation } from '../lib/react-query/queriesAndMutations'
 import { fetchGroups } from '../lib/appwrite/api'
 import Modal from '../components/Modal'
 
 const RootLayout = () => {
+    const { groupId } = useParams()
     const [groups, setGroups] = useState(() => {
         const savedGroups = localStorage.getItem('groups');
         return savedGroups ? JSON.parse(savedGroups) : []
@@ -73,8 +74,8 @@ const RootLayout = () => {
             
 
             <section className='flex-1 flex flex-col h-screen'>
-                <TopBar groups={groups} openModal={openModal}/>
-                <Outlet openModal={openModal} />
+                <TopBar groups={groups} openModal={openModal} onClose={closeModal} groupId={groupId}/>
+                <Outlet />
             </section>
         </div>
     )

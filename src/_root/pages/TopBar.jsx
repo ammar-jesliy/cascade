@@ -2,8 +2,7 @@ import option from '../../assets/Options.svg'
 import { useParams } from 'react-router-dom'
 import CreateTaskModal from './CreateTaskModal';
 
-const TopBar = ({ groups, openModal }) => {
-  const { groupId } = useParams()
+const TopBar = ({ groups, openModal, groupId, onClose }) => {
   const activeGroup = groups.find(group => group.$id === groupId);
 
   return (
@@ -12,7 +11,7 @@ const TopBar = ({ groups, openModal }) => {
       <div className='flex items-center gap-10'>
         <button 
           className='text-lg font-semibold text-white bg-accent1 py-3 px-6 rounded-full opacity-80 hover:opacity-100 transition'
-          onClick={() => openModal(CreateTaskModal)}
+          onClick={() => openModal(<CreateTaskModal groupId={groupId} onClose={onClose}/>)}
         >
           + Create New Task
         </button>

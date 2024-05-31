@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import CreateStatusModal from './CreateStatusModal';
 import { useCreateStatusMutation } from '../../lib/react-query/queriesAndMutations';
 import Modal from '../../components/Modal'
-import { fetchStatuses } from '../../lib/appwrite/api';
+import { fetchStatuses, fetchTasks, fetchSubtasks } from '../../lib/appwrite/api';
 import Spinner from '../../components/Spinner';
 import '../../assets/scrollbar.css'
 
@@ -19,6 +19,15 @@ const MainPage = () => {
     const [statusColor, setStatusColor] = useState("#000000");
     const [isLoading, setIsLoading] = useState(false);
 
+    const [tasks, setTasks] = useState(() => {
+        const savedTasks = localStorage.getItem('tasks');
+        return savedTasks ? JSON.parse(savedTasks) : []
+    })
+    const [subtasks, setSubtasks] = useState(() => {
+        const savedSubtasks = localStorage.getItem('subtasks');
+        return savedSubtasks ? JSON.parse(savedSubtasks) : []
+    })
+
     const [isModalVisible, setModalVisible] = useState(false);
 
     const openModal = () => {
@@ -27,6 +36,8 @@ const MainPage = () => {
 
     const closeModal = () => {
         setModalVisible(false);
+        setStatusTitle("");
+        setStatusColor("#000000")
     }
 
     const handleCreateStatus = async () => {
@@ -52,14 +63,29 @@ const MainPage = () => {
 
 
     useEffect(() => {
-        const loadStatuses = async () => {
+        const loadData = async () => {
             try {
                 setIsLoading(true)
                 const fetchedStatuses = await fetchStatuses(groupId);
 
-                if (!fetchStatuses) throw Error
+                if (!fetchedStatuses) throw Error
+
+                const fetchedTasksPromises = fetchedStatuses.map(status => fetchTasks(status.$id));
+                const fetchedTasksArray = await Promise.all(fetchedTasksPromises);
+                const fetchedTasks = fetchedTasksArray.flat();
+
+                if (!fetchedTasks) throw Error
+
+                const fetchedSubtasksPromises = fetchedTasks.map(task => fetchSubtasks(task.$id));
+                const fetchedSubtasksArray = await Promise.all(fetchedSubtasksPromises);
+                const fetchedSubtasks = fetchedSubtasksArray.flat();
+
+                if (!fetchedSubtasks) throw Error
 
                 setStatuses(fetchedStatuses)
+                setTasks(fetchedTasks)
+                setSubtasks(fetchedSubtasks)
+
             } catch (error) {
                 console.log(error)
             } finally {
@@ -69,13 +95,21 @@ const MainPage = () => {
         };
 
         if (groupId) {
-            loadStatuses();
+            loadData();
         }
     }, [groupId])
 
     useEffect(() => {
-        localStorage.setItem('statuses', JSON.stringify(statuses));
+        localStorage.setItem('statuses', JSON.stringify(statuses))
     }, [statuses])
+
+    useEffect(() => {
+        localStorage.setItem('tasks', JSON.stringify(tasks))
+    }, [tasks])
+
+    useEffect(() => {
+        localStorage.setItem('subtasks', JSON.stringify(subtasks))
+    }, [subtasks])
 
     return (
         <>
@@ -110,7 +144,7 @@ const MainPage = () => {
                 </div>
             </Modal>
 
-            <div className='bg-bgApp flex-1 h-[calc(100vh-100px)] lg:w-[calc(100vw-320px)] overflow-auto mt-[100px] pl-8 pb-8 lg:ml-[320px]'>
+            <div className='bg-bgApp flex-1 h-[calc(100vh-100px)] lg:w-[calc(100vw-320px)] w-screen overflow-auto mt-[100px] pl-8 pb-8 lg:ml-[320px]'>
                 {isLoading ? <Spinner /> : 
                     <div className='z-10 flex'>
 
@@ -133,10 +167,10 @@ const MainPage = () => {
                                             <p className='text-lg font-normal uppercase text-grey2'>{status.title}</p>
                                         </div>
                                         <div>
-                                            <div className='bg-bg rounded-xl py-6 px-6 flex flex-col gap-4 cursor-pointer'>
-                                                <p className='text-lg font-semibold text-primary'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minus, sapiente?</p>
+                                            <button className='bg-bg rounded-xl py-6 px-6 flex flex-col gap-4 cursor-pointer'>
+                                                <p className='text-lg font-semibold text-primary text-left'>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minus, sapiente?</p>
                                                 <p className='text-sm font-medium text-grey2'>1 of 3 subtasks</p>
-                                            </div>
+                                            </button>
                                         </div>
                                     </li>
                                 )

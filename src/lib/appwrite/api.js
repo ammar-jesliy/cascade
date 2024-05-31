@@ -173,3 +173,88 @@ export async function fetchStatuses(groupId) {
         return [];
     }
 }
+
+
+// ========================= Task Functions ===================================
+
+export async function createTask(task) {
+    try {
+        const newTask = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.taskCollectionId,
+            ID.unique(),
+            {
+                statuses: task.statusId,
+                title: task.title,
+                description: task.description
+            }
+        )
+
+        if (!newTask) throw Error;
+
+        return newTask;
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function fetchTasks(statusId) {
+    try {
+        const response = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.taskCollectionId,
+            [Query.equal('statuses', statusId)]
+        );
+
+        if (!response) throw Error;
+
+        return response.documents
+
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
+
+
+// ====================== Subtask Functions ===================================
+
+export async function createSubtask(subtask) {
+    try {
+        const newSubtask = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.subtaskCollectionId,
+            ID.unique(),
+            {
+                tasks: subtask.taskId,
+                title: subtask.title,
+            }
+        )
+
+        if (!newSubtask) throw Error;
+
+        return newSubtask;
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function fetchSubtasks(taskId) {
+    try {
+        const response = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.subtaskCollectionId,
+            [Query.equal('tasks', taskId)]
+        );
+
+        if (!response) throw Error;
+
+        return response.documents
+
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
