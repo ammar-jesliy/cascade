@@ -258,3 +258,18 @@ export async function fetchSubtasks(taskId) {
         return [];
     }
 }
+
+export async function setComplete(subtaskId, completed) {
+    try {
+        await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.subtaskCollectionId,
+            subtaskId,
+            {
+                completed: completed
+            }
+        )
+    } catch (error) {
+        console.log('Failed to update', error)
+    }
+}
