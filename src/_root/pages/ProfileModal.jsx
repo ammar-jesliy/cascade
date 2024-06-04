@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const ProfileModal = () => {
-  return (
-    <div>
-      Profile
-    </div>
-  )
-}
+  return <div>Profile</div>;
+};
 
-export default ProfileModal
+export default ProfileModal;

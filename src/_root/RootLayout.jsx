@@ -1,84 +1,103 @@
-import { useEffect, useState } from 'react'
-import TopBar from './pages/TopBar'
-import Groups from './pages/Groups'
-import { Outlet, useNavigate, useParams } from 'react-router-dom'
-import { useUserContent } from '../context/AuthContext'
-import { useCreateGroupMutation } from '../lib/react-query/queriesAndMutations'
-import { fetchGroups } from '../lib/appwrite/api'
-import Modal from '../components/Modal'
+import { useEffect, useState } from "react";
+import TopBar from "./pages/TopBar";
+import Groups from "./pages/Groups";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { useUserContent } from "../context/AuthContext";
+import { useCreateGroupMutation } from "../lib/react-query/queriesAndMutations";
+import { fetchGroups } from "../lib/appwrite/api";
+import Modal from "../components/Modal";
 
 const RootLayout = () => {
-    const { groupId } = useParams()
-    const [groups, setGroups] = useState(() => {
-        const savedGroups = localStorage.getItem('groups');
-        return savedGroups ? JSON.parse(savedGroups) : []
-    });
-    const { user } = useUserContent();
-    const { mutateAsync: createGroup } = useCreateGroupMutation();
-    const navigate = useNavigate()
-    const [isModalVisible, setModalVisible] = useState(false);
-    const [modalContent, setModalContent] = useState(null);
+  const { groupId } = useParams();
+  const [groups, setGroups] = useState(() => {
+    const savedGroups = localStorage.getItem("groups");
+    return savedGroups ? JSON.parse(savedGroups) : [];
+  });
+  const { user } = useUserContent();
+  const { mutateAsync: createGroup } = useCreateGroupMutation();
+  const navigate = useNavigate();
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
+  const [isSidebarVisible, setSidebarVisible] = useState(false);
 
+  const toggleSidebar = () => {
+    setSidebarVisible(!isSidebarVisible);
+    console.log(isSidebarVisible);
+  };
 
-    const handleCreateGroup = async (title) => {
-        const userId = user.$id 
-        try {
-            const newGroup = await createGroup({title, userId})
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setSidebarVisible(!isSidebarVisible);
+    } else {
+      setSidebarVisible(false);
+    }
+  }, [groupId]);
 
-            if (!newGroup) throw Error;
+  const handleCreateGroup = async (title) => {
+    const userId = user.$id;
+    try {
+      const newGroup = await createGroup({ title, userId });
 
-            setGroups(prevGroups => [...prevGroups, newGroup]);
+      if (!newGroup) throw Error;
 
-            navigate(`/groups/${newGroup.$id}`)
+      setGroups((prevGroups) => [...prevGroups, newGroup]);
 
-        } catch (error) {
-            console.log(error);
-        }
+      navigate(`/groups/${newGroup.$id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const openModal = (content) => {
+    setModalContent(content);
+    setModalVisible(true);
+  };
+  const closeModal = () => {
+    setModalVisible(false);
+    setModalContent(null);
+  };
+
+  useEffect(() => {
+    const loadGroups = async () => {
+      const fetchedGroups = await fetchGroups(user.$id);
+      setGroups(fetchedGroups);
     };
 
-
-    const openModal = (content) => {
-        setModalContent(content);
-        setModalVisible(true);
+    if (user.$id) {
+      loadGroups();
     }
-    const closeModal = () => {
-        setModalVisible(false);
-        setModalContent(null);
-    }
+  }, [user.$id]);
 
+  useEffect(() => {
+    localStorage.setItem("groups", JSON.stringify(groups));
+  }, [groups]);
 
-    useEffect(() => {
-        const loadGroups = async () => {
-            const fetchedGroups = await fetchGroups(user.$id);
-            setGroups(fetchedGroups)
-        };
+  return (
+    <div className="flex w-full">
+      <Modal isVisible={isModalVisible} onClose={closeModal}>
+        {modalContent}
+      </Modal>
 
-        if (user.$id) {
-            loadGroups();
-        }
-    }, [user.$id])
+      <Groups
+        onCreateGroup={handleCreateGroup}
+        groups={groups}
+        openModal={openModal}
+        isSidebarVisible={isSidebarVisible}
+        setSidebarVisible={setSidebarVisible}
+      />
 
-    useEffect(() => {
-        localStorage.setItem('groups', JSON.stringify(groups));
-    }, [groups])
+      <section className="flex-1 flex flex-col h-screen">
+        <TopBar
+          groups={groups}
+          openModal={openModal}
+          onClose={closeModal}
+          groupId={groupId}
+          toggleSidebar={toggleSidebar}
+        />
+        <Outlet />
+      </section>
+    </div>
+  );
+};
 
-
-    return (
-        <div className='flex w-full'>
-
-            <Modal isVisible={isModalVisible} onClose={closeModal}>
-                {modalContent}
-            </Modal>
-
-            <Groups onCreateGroup={handleCreateGroup} groups={groups} openModal={openModal} />
-            
-
-            <section className='flex-1 flex flex-col h-screen'>
-                <TopBar groups={groups} openModal={openModal} onClose={closeModal} groupId={groupId}/>
-                <Outlet />
-            </section>
-        </div>
-    )
-}
-
-export default RootLayout
+export default RootLayout;

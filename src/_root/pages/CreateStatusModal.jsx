@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
-const CreateStatusModal = ({ statusTitle, statusColor, setStatusColor, setStatusTitle, onClick }) => {
+const CreateStatusModal = ({
+  statusTitle,
+  statusColor,
+  setStatusColor,
+  setStatusTitle,
+  onClick,
+}) => {
+  const [title, setTitle] = useState("");
+  const [color, setColor] = useState("#000000");
 
-  const [title, setTitle] = useState('')
-  const [color, setColor] = useState('#000000')
-
-  setStatusColor(color)
-  setStatusTitle(title)
+  setStatusColor(color);
+  setStatusTitle(title);
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -15,7 +20,7 @@ const CreateStatusModal = ({ statusTitle, statusColor, setStatusColor, setStatus
           type="text"
           value={title}
           onChange={(e) => {
-            setTitle(e.target.value)
+            setTitle(e.target.value);
           }}
           placeholder="Status Title"
           className="w-full h-40px px-3 py-2 text-black rounded-lg border-grey1 border-2"
@@ -38,7 +43,7 @@ const CreateStatusModal = ({ statusTitle, statusColor, setStatusColor, setStatus
         Create
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default CreateStatusModal
+export default CreateStatusModal;

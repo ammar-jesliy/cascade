@@ -7,11 +7,16 @@ import {
   fetchTasks,
   fetchSubtasks,
   setComplete,
+  updateStatus,
+  deleteTask,
+  deleteOnlyStatus,
 } from "../../lib/appwrite/api";
 import Spinner from "../../components/Spinner";
 import "../../assets/scrollbar.css";
 import Delete from "../../assets/Delete.svg";
+import Xdelete from "../../assets/X-delete.svg";
 import Subtasks from "./Subtasks";
+import Dropdown from "../../components/Dropdown";
 
 const MainPage = () => {
   const { groupId } = useParams();
@@ -36,8 +41,14 @@ const MainPage = () => {
 
   const [isStatusModalVisible, setStatusModalVisible] = useState(false);
   const [isTaskModalVisible, setTaskModalVisible] = useState(false);
+  const [isDeleteStatusModalVisible, setDeleteStatusModalVisible] =
+    useState(false);
 
   const [currentTask, setCurrentTask] = useState();
+  const [closedTasks, setClosedTasks] = useState(false);
+  const [currentStatus, setCurrentStatus] = useState();
+
+  const [selectedStatus, setSelectedStatus] = useState(null);
 
   const openStatusModal = () => {
     setStatusModalVisible(true);
@@ -56,6 +67,18 @@ const MainPage = () => {
 
   const closeTaskModal = () => {
     setTaskModalVisible(false);
+    setClosedTasks(!closedTasks);
+    setCurrentTask(null);
+  };
+
+  const openDeleteStatusModal = (status) => {
+    setDeleteStatusModalVisible(true);
+    setCurrentStatus(status);
+  };
+
+  const closeDeleteStatusModal = () => {
+    setDeleteStatusModalVisible(false);
+    setCurrentStatus(null);
   };
 
   const handleCreateStatus = async () => {
@@ -81,6 +104,27 @@ const MainPage = () => {
   const updateSubtaskStatus = async (subtaskId, newCompleted) => {
     try {
       await setComplete(subtaskId, newCompleted);
+      console.log("Done update");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      deleteTask(taskId);
+      closeTaskModal();
+      setClosedTasks(!closedTasks);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteOnlyStatus = async (statusId) => {
+    try {
+      deleteOnlyStatus(statusId);
+      closeDeleteStatusModal();
+      setClosedTasks(!closedTasks);
     } catch (error) {
       console.log(error);
     }
@@ -123,7 +167,7 @@ const MainPage = () => {
     if (groupId) {
       loadData();
     }
-  }, [groupId]);
+  }, [groupId, closedTasks]);
 
   useEffect(() => {
     localStorage.setItem("statuses", JSON.stringify(statuses));
@@ -137,6 +181,24 @@ const MainPage = () => {
     localStorage.setItem("subtasks", JSON.stringify(subtasks));
   }, [subtasks]);
 
+  useEffect(() => {
+    const update = async () => {
+      const taskId = currentTask;
+      const statusId = selectedStatus.$id;
+
+      try {
+        await updateStatus(taskId, statusId);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (selectedStatus) {
+      closeTaskModal();
+      update();
+    }
+  }, [selectedStatus]);
+
   return (
     <>
       <Modal isVisible={isTaskModalVisible} onClose={closeTaskModal}>
@@ -146,7 +208,7 @@ const MainPage = () => {
               {tasks.find((task) => task.$id === currentTask) &&
                 tasks.find((task) => task.$id === currentTask).title}
             </h3>
-            <button>
+            <button onClick={() => handleDeleteTask(currentTask)}>
               <img src={Delete} alt="Delete" />
             </button>
           </div>
@@ -154,20 +216,34 @@ const MainPage = () => {
             {tasks.find((task) => task.$id === currentTask) &&
               tasks.find((task) => task.$id === currentTask).description}
           </p>
-          <div>
-            <h4 className="font-semibold text-base text-primary">Subtasks</h4>
-            {subtasks
-              .filter((subtask) => subtask.tasks.$id === currentTask)
-              .map((subtask) => {
-                return (
-                  <Subtasks
-                    key={subtask.$id}
-                    subtask={subtask}
-                    updateSubtaskStatus={updateSubtaskStatus}
-                  />
-                );
-              })}
-          </div>
+          {subtasks.filter((subtask) => subtask.tasks.$id === currentTask)
+            .length != 0 && (
+            <div>
+              <h4 className="font-semibold text-base text-primary mb-3">
+                Subtasks
+              </h4>
+              {subtasks
+                .filter((subtask) => subtask.tasks.$id === currentTask)
+                .map((subtask) => {
+                  return (
+                    <Subtasks
+                      key={subtask.$id}
+                      subtask={subtask}
+                      subtasks={subtasks}
+                      updateSubtaskStatus={updateSubtaskStatus}
+                    />
+                  );
+                })}
+            </div>
+          )}
+          <Dropdown
+            options={statuses || []}
+            selectedOption={
+              tasks.find((task) => task.$id === currentTask) &&
+              tasks.find((task) => task.$id === currentTask).statuses
+            }
+            onOptionSelect={setSelectedStatus}
+          />
         </div>
       </Modal>
       <Modal isVisible={isStatusModalVisible} onClose={closeStatusModal}>
@@ -200,6 +276,37 @@ const MainPage = () => {
         </div>
       </Modal>
 
+      <Modal
+        isVisible={isDeleteStatusModalVisible}
+        onClose={closeDeleteStatusModal}
+      >
+        {currentStatus &&
+          (currentStatus.tasks != 0 ? (
+            <p>Assign tasks to different statuses first</p>
+          ) : (
+            <div>
+              <p className="text-lg mb-8">
+                Are you sure you want to delete{" "}
+                <span className="font-bold">{currentStatus.title}</span>?
+              </p>
+              <div className="flex gap-8">
+                <button
+                  className="flex-1 py-2 border-2 border-accent1 rounded-lg text-accent1 font-semibold"
+                  onClick={() => closeDeleteStatusModal()}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="flex-1 py-2 bg-red-600 rounded-lg text-white font-semibold"
+                  onClick={() => handleDeleteOnlyStatus(currentStatus.$id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+      </Modal>
+
       <div className="bg-bgApp flex-1 h-[calc(100vh-100px)] lg:w-[calc(100vw-320px)] w-screen overflow-auto mt-[100px] pl-8 pb-8 lg:ml-[320px]">
         {isLoading ? (
           <Spinner />
@@ -220,6 +327,13 @@ const MainPage = () => {
                           <p className="text-lg font-normal uppercase text-grey2">
                             {status.title}
                           </p>
+                          <button onClick={() => openDeleteStatusModal(status)}>
+                            <img
+                              src={Xdelete}
+                              alt="remove"
+                              className="w-4 ml-8"
+                            />
+                          </button>
                         </div>
                         {tasks &&
                           tasks
@@ -235,7 +349,11 @@ const MainPage = () => {
                                       {task.title}
                                     </p>
                                     <p className="text-sm font-medium text-grey2">
-                                      0 of{" "}
+                                      {task.subTasks &&
+                                        task.subTasks.filter(
+                                          (subtask) => subtask.completed
+                                        ).length}{" "}
+                                      of{" "}
                                       {
                                         subtasks.filter(
                                           (subtask) =>
