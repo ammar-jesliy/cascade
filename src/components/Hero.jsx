@@ -1,5 +1,6 @@
 import Section from "./Section";
 import Button from "./Button";
+import demoImg from "../assets/demo.png"
 
 const Hero = () => {
   return (
@@ -20,7 +21,11 @@ const Hero = () => {
       </div>
 
       <div className="z-10 max-w-[380px] h-[700px] my-16 relative mx-auto md:max-w-[1000px] md:h-[500px]">
-        <div className="w-full h-full bg-white z-10 border-2 border-[rgba(0, 0, 0, 0.5)] rounded-3xl"></div>
+        <div className="bg-white z-10 border-2 border-[rgba(0, 0, 0, 0.5)] rounded-3xl">
+          <img src={demoImg} alt="Demo"
+            className="rounded-3xl"
+          />
+        </div>
         <div className="absolute z-[-1] w-[90%] h-[90%] top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] bg-accent1 blur-3xl opacity-80"></div>
       </div>
     </Section>
