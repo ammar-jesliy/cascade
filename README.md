@@ -39,55 +39,6 @@ Cascade is a full-stack task manager web application built to help individuals a
 - **Vite:** Frontend tooling for fast build and development.
 - **ESLint & Prettier:** For code linting and formatting.
 
-## Installation
-
-### Prerequisites
-
-- Node.js (>= 14.x)
-- NPM or Yarn
-- Appwrite instance
-
-### Steps
-
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/your-username/cascade.git
-   cd cascade
-   ```
-
-2. **Install dependencies:**
-
-   ```bash
-   npm install
-   ```
-
-   or
-
-   ```bash
-   yarn install
-   ```
-
-3. **Set up Appwrite:**
-
-   - Ensure you have an Appwrite instance running.
-   - Create a new project in Appwrite and configure the necessary collections for users, groups, statuses, tasks, and subtasks.
-   - Update the Appwrite configuration in your application (e.g., endpoint, project ID).
-
-4. **Run the application:**
-
-   ```bash
-   npm run dev
-   ```
-
-   or
-
-   ```bash
-   yarn dev
-   ```
-
-   The application should now be running on `http://localhost:3000`.
-
 ## Usage
 
 ### Group Creation
@@ -132,43 +83,9 @@ Cascade is a full-stack task manager web application built to help individuals a
    - Subtasks are listed under their parent task.
    - Click on a subtask to view, edit, or delete it.
 
-### Real-time Collaboration
-
-- Changes made by one user are instantly reflected for all team members, ensuring everyone is always up-to-date.
-
 ## Contributing
 
-We welcome contributions from the community to make Cascade better. If you wish to contribute, please follow these steps:
-
-1. **Fork the repository:**
-   Click on the "Fork" button at the top of this repository.
-
-2. **Clone your fork:**
-
-   ```bash
-   git clone https://github.com/your-username/cascade.git
-   ```
-
-3. **Create a branch:**
-
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-
-4. **Make your changes and commit:**
-
-   ```bash
-   git commit -m 'Add some feature'
-   ```
-
-5. **Push to your branch:**
-
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-
-6. **Create a Pull Request:**
-   Go to the original repository and create a pull request from your fork.
+We welcome contributions from the community to make Cascade better.
 
 ## License
 
